@@ -63,7 +63,8 @@ namespace LicenseVerificationLibrary
         /// </exception>
         public static ResponseData Parse(string responseData)
         {
-            // Must parse out main response data and response-specific data.
+			System.Diagnostics.Debug.WriteLine(responseData);
+			// Must parse out main response data and response-specific data.
             int index = responseData.IndexOf(':');
             string mainData = responseData;
             string extraData = string.Empty;
