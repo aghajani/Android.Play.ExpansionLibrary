@@ -56,7 +56,7 @@ namespace LicenseVerificationLibrary
         /// Timeout value (in milliseconds) for calls to service.
         /// The timeout ms.
         /// </summary>
-        private const int TimeoutMs = 10 * 1000;
+        private const int TimeoutMs = 60 * 1000;
 
         /// <summary>
         /// The random.
@@ -141,7 +141,7 @@ namespace LicenseVerificationLibrary
         /// <exception cref="ArgumentException">
         /// if encodedPublicKey is invalid
         /// </exception>
-        public LicenseChecker(Context context, IPolicy policy, string encodedPublicKey)
+        public LicenseChecker(Context context, IPolicy policy, string encodedPublicKey, string customPackageName, string customVersionCode)
         {
             this.locker = new object();
             this.checksInProgress = new HashSet<LicenseValidator>();
@@ -149,8 +149,14 @@ namespace LicenseVerificationLibrary
             this.context = context;
             this.policy = policy;
             this.publicKey = GeneratePublicKey(encodedPublicKey);
-            this.packageName = this.context.PackageName;
-            this.versionCode = GetVersionCode(context, this.packageName);
+			if(String.IsNullOrWhiteSpace(customPackageName))
+            	this.packageName = this.context.PackageName;
+			else
+				this.packageName= customPackageName;
+			if(String.IsNullOrWhiteSpace(customVersionCode))
+				this.versionCode = GetVersionCode(context, this.packageName);
+			else
+            	this.versionCode = customVersionCode;
             var handlerThread = new HandlerThread("background thread");
             handlerThread.Start();
             this.handler = new Handler(handlerThread.Looper);
